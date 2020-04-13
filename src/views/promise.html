@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>promise</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  </head>
+  <body>
+  </body>
+  <script>
+//      Promise（承诺的意思） 这个对象用来执行回调的代码 会存储状态 进行中（pendding）
+//  * 已经完成Resolved   已经失败 reject   把异步代码丢给Promise对象执行
+//  *  Promise.then  然后的意思  根据这个状态 去调用的函数
+
+    function queryData(url) {
+      var p = new Promise(function(resolve, reject) {
+        $.ajax({
+          url: url,
+          type: 'get',
+          dataType: 'json',
+          async: true,
+          success: function(data) {
+            resolve(data)
+          },
+          error: function(error) {
+            reject('出错了')
+          },
+        })
+      })
+      return p;
+    }
+
+    queryData("http://127.0.0.1:8848/supermall/public/shouji.json")
+      .then(data=> {
+        console.log(data)
+      }),
+      function(err) {
+        console.log(err)
+      }
+
+    // 1.发送多个ajax请求(异步回调)
+    queryData("http://127.0.0.1:8848/supermall/public/shouji.json")
+      .then(data=> {
+        console.log(data);
+        return queryData("http://127.0.0.1:8848/supermall/public/shouji2.json")
+      })
+      .then(data=> {
+        console.log(data);
+        return queryData("http://127.0.0.1:8848/supermall/public/shouji3.json")
+      })
+      .then(data=> {
+        console.log(data);
+      })
+
+      //2. 异步同步发起多个请求
+      // var p1=queryData("http://127.0.0.1:8848/supermall/public/shouji.json");
+      // var p2=queryData("http://127.0.0.1:8848/supermall/public/shouji3.json");
+      // var p3=queryData("http://127.0.0.1:8848/supermall/public/shouji2.json");
+      // Promise.all([p1,p2,p3]).then(res=>{
+      //   console.log(res)   //最终以数组形式返回结果
+      // })
+
+  </script>
+</html>
